@@ -54,6 +54,7 @@
 #![warn(unused_qualifications)]
 #![cfg_attr(not(feature = "std"), no_std)]
 #![cfg_attr(not(feature = "std"), feature(alloc))]
+#[allow(warnings)]
 
 #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
 extern crate libc;
@@ -67,7 +68,6 @@ mod libc {
     pub type size_t = u32;
     pub type uint64_t = u64;
 }
-
 
 extern crate libsodium_sys as ffi;
 #[cfg(test)]

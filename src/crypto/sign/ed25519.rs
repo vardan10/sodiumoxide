@@ -2,6 +2,8 @@
 //! [Ed25519](http://ed25519.cr.yp.to/). This function is conjectured to meet the
 //! standard notion of unforgeability for a public-key signature scheme under
 //! chosen-message attacks.
+use super::super::box_;
+
 use ffi;
 use libc::c_ulonglong;
 #[cfg(not(feature = "std"))]
@@ -143,6 +145,30 @@ pub fn verify_detached(
 ) -> bool {
     unsafe {
         0 == ffi::crypto_sign_ed25519_verify_detached(sig, m.as_ptr(), m.len() as c_ulonglong, pk)
+    }
+}
+
+pub fn ed25519_sk_to_curve25519(pk: &[u8]) -> box_::curve25519xsalsa20poly1305::PublicKey {
+    unsafe {
+        pub const BOXKEYPUBLICKEYBYTES: usize =
+            ffi::crypto_box_curve25519xsalsa20poly1305_PUBLICKEYBYTES as usize;
+        let mut edkey = PublicKey::from_slice(&pk).unwrap();
+        let mut curvekey = box_::curve25519xsalsa20poly1305::PublicKey([0u8; BOXKEYPUBLICKEYBYTES]);
+        ffi::crypto_sign_ed25519_sk_to_curve25519(curvekey.0.as_mut_ptr(), edkey.0.as_mut_ptr());
+        curvekey
+    }
+}
+
+pub fn ed25519_pk_to_curve25519(sk: &[u8]) -> box_::curve25519xsalsa20poly1305::SecretKey {
+    unsafe {
+        pub const BOXKEYSECRETKEYBYTES: usize =
+            ffi::crypto_box_curve25519xsalsa20poly1305_SECRETKEYBYTES as usize;
+
+        let mut edkey = SecretKey::from_slice(&sk).unwrap();
+
+        let mut curvekey = box_::curve25519xsalsa20poly1305::SecretKey([0u8; BOXKEYSECRETKEYBYTES]);
+        ffi::crypto_sign_ed25519_sk_to_curve25519(curvekey.0.as_mut_ptr(), edkey.0.as_mut_ptr());
+        curvekey
     }
 }
 
