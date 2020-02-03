@@ -1,6 +1,7 @@
 //! Cryptographic random number generation.
-#[cfg(not(feature = "std"))] use prelude::*;
 use ffi;
+#[cfg(not(feature = "std"))]
+use prelude::*;
 
 /// `randombytes()` randomly generates size bytes of data.
 ///

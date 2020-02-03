@@ -108,7 +108,7 @@ pub fn stream_xor_inplace(m: &mut [u8],
 /// `stream_xor_ic()` encrypts a message `m` using a secret key `k` and a nonce `n`,
 /// it is similar to `stream_xor()` but allows the caller to set the value of the initial
 /// block counter `ic`.
-/// 
+///
 /// `stream_xor()` guarantees that the ciphertext has the same length as the plaintext,
 /// and is the plaintext xor the output of `stream()`.
 /// Consequently `stream_xor()` can also be used to decrypt.

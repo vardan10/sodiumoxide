@@ -21,7 +21,7 @@ pub const TAGBYTES: usize = $tagbytes;
 
 new_type! {
     /// `Key` for symmetric authenticated encryption with additional data.
-    /// 
+    ///
     /// When a `Key` goes out of scope its contents will
     /// be zeroed out
     secret Key(KEYBYTES);
@@ -39,7 +39,7 @@ new_type! {
 }
 
 /// `gen_key()` randomly generates a secret key
-/// 
+///
 /// THREAD SAFETY: `gen_key()` is thread-safe provided that you have
 /// called `sodiumoxide::init()` once before using any other function
 /// from sodiumoxide.
@@ -60,7 +60,7 @@ pub fn gen_nonce() -> Nonce {
     n
 }
 
-/// `seal()` encrypts and authenticates a message `m` together with optional plaintext data `ad` 
+/// `seal()` encrypts and authenticates a message `m` together with optional plaintext data `ad`
 /// using a secret key `k` and a nonce `n`. It returns a ciphertext `c`.
 pub fn seal(m: &[u8], ad: Option<&[u8]>, n: &Nonce, k: &Key) -> Vec<u8> {
     let (ad_p, ad_len) = ad.map(|ad| (ad.as_ptr(), ad.len() as c_ulonglong)).unwrap_or((0 as *const _, 0));
@@ -84,8 +84,8 @@ pub fn seal(m: &[u8], ad: Option<&[u8]>, n: &Nonce, k: &Key) -> Vec<u8> {
     c
 }
 
-/// `seal_detached()` encrypts and authenticates a message `m` together with optional plaintext data `ad` 
-/// using a secret key `k` and a nonce `n`. 
+/// `seal_detached()` encrypts and authenticates a message `m` together with optional plaintext data `ad`
+/// using a secret key `k` and a nonce `n`.
 /// `m` is encrypted in place, so after this function returns it will contain the ciphertext.
 /// The detached authentication tag is returned by value.
 pub fn seal_detached(m: &mut [u8], ad: Option<&[u8]>, n: &Nonce, k: &Key) -> Tag {

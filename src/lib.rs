@@ -52,16 +52,28 @@
 #![warn(non_upper_case_globals)]
 #![warn(non_camel_case_types)]
 #![warn(unused_qualifications)]
-
 #![cfg_attr(not(feature = "std"), no_std)]
 #![cfg_attr(not(feature = "std"), feature(alloc))]
 
-extern crate libsodium_sys as ffi;
+#[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
 extern crate libc;
-#[cfg(any(test, feature = "serde"))]
-extern crate serde;
+
+#[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
+mod libc {
+    pub type c_void = u8;
+    pub type c_int = i32;
+    pub type c_ulonglong = u64;
+    pub type c_char = i8;
+    pub type size_t = u32;
+    pub type uint64_t = u64;
+}
+
+
+extern crate libsodium_sys as ffi;
 #[cfg(test)]
 extern crate rustc_serialize;
+#[cfg(any(test, feature = "serde"))]
+extern crate serde;
 #[cfg(not(feature = "std"))]
 #[macro_use]
 extern crate alloc;
@@ -75,8 +87,8 @@ mod std {
 
 #[cfg(not(feature = "std"))]
 mod prelude {
-    pub use alloc::vec::Vec;
     pub use alloc::string::String;
+    pub use alloc::vec::Vec;
 }
 
 /// `init()` initializes the sodium library and chooses faster versions of
@@ -86,9 +98,7 @@ mod prelude {
 ///
 /// `init()` returns `false` if initialization failed.
 pub fn init() -> bool {
-    unsafe {
-        ffi::sodium_init() != -1
-    }
+    unsafe { ffi::sodium_init() != -1 }
 }
 
 #[macro_use]
@@ -103,16 +113,16 @@ mod test_utils;
 /// Cryptographic functions
 pub mod crypto {
     pub mod aead;
-    pub mod box_;
-    pub mod sealedbox;
-    pub mod sign;
-    pub mod scalarmult;
     pub mod auth;
+    pub mod box_;
     pub mod hash;
-    pub mod secretbox;
     pub mod onetimeauth;
     pub mod pwhash;
-    pub mod stream;
+    pub mod scalarmult;
+    pub mod sealedbox;
+    pub mod secretbox;
     pub mod shorthash;
+    pub mod sign;
+    pub mod stream;
     pub mod verify;
 }
