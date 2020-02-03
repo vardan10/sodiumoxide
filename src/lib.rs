@@ -64,7 +64,19 @@
 
 extern crate libsodium_sys as ffi;
 
+#[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
 extern crate libc;
+
+#[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
+mod libc {
+    pub type c_void = u8;
+    pub type c_int = i32;
+    pub type c_ulonglong = u64;
+    pub type c_char = i8;
+    pub type size_t = u32;
+    pub type uint64_t = u64;
+}
+
 #[cfg(any(test, feature = "serde"))]
 extern crate serde;
 #[cfg(not(feature = "std"))]
