@@ -43,12 +43,12 @@ extern "C" {
         pk: *const [u8; crypto_sign_ed25519_PUBLICKEYBYTES],
     ) -> c_int;
     pub fn crypto_sign_ed25519_sk_to_curve25519(
-        curve25519_sk: *mut libc::c_uchar,
-        ed25519_sk: *const libc::c_uchar,
+        curve25519_sk: *mut libc::c_char,
+        ed25519_sk: *const libc::c_char,
     ) -> libc::c_int;
     pub fn crypto_sign_ed25519_sk_to_seed(
-        seed: *mut libc::c_uchar,
-        sk: *const libc::c_uchar,
+        seed: *mut libc::c_char,
+        sk: *const libc::c_char,
     ) -> libc::c_int;
     pub fn crypto_sign_ed25519_bytes() -> size_t;
     pub fn crypto_sign_ed25519_seedbytes() -> size_t;
